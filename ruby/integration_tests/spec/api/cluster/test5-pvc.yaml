@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: test5-pvc
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "test5-sc"
+spec:
+   accessModes:
+     - ReadWriteOnce
+   resources:
+     requests:
+        storage: 2Gi
