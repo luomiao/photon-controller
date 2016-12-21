@@ -52,6 +52,8 @@ public class ClusterManagerFactory {
   private CloseableHttpAsyncClient httpAsyncClient;
   private ServerSet cloudStoreServerSet;
   private String scriptsDirectory;
+  private String loadBalancerAddress;
+  private boolean enableAuth;
 
   /**
    * All Xenon Factory Services in Cluster-Manager backend.
@@ -83,11 +85,15 @@ public class ClusterManagerFactory {
   public ClusterManagerFactory(ListeningExecutorService listeningExecutorService,
                                CloseableHttpAsyncClient httpAsyncClient,
                                ServerSet cloudStoreServerSet,
-                               String scriptsDirectory) {
+                               String scriptsDirectory,
+                               String loadBalancerAddress,
+                               boolean enableAuth) {
     this.listeningExecutorService = listeningExecutorService;
     this.httpAsyncClient = httpAsyncClient;
     this.cloudStoreServerSet = cloudStoreServerSet;
     this.scriptsDirectory = scriptsDirectory;
+    this.loadBalancerAddress = loadBalancerAddress;
+    this.enableAuth = enableAuth;
   }
 
   /**
@@ -159,5 +165,19 @@ public class ClusterManagerFactory {
    */
   public String getScriptsDirectory() {
     return this.scriptsDirectory;
+  }
+
+  /**
+   * Returns the IP address of the load balancer.
+   */
+  public String getLoadBalancerAddress() {
+    return this.loadBalancerAddress;
+  }
+
+  /**
+   * Returns if authentication is enabled with load balancer.
+   */
+  public boolean isAuthEnabled() {
+    return this.enableAuth;
   }
 }

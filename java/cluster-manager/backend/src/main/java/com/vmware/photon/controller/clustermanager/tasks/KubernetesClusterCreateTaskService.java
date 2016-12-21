@@ -30,6 +30,7 @@ import com.vmware.photon.controller.clustermanager.templates.KubernetesMasterNod
 import com.vmware.photon.controller.clustermanager.templates.KubernetesWorkerNodeTemplate;
 import com.vmware.photon.controller.clustermanager.templates.NodeTemplateUtils;
 import com.vmware.photon.controller.clustermanager.utils.HostUtils;
+import com.vmware.photon.controller.common.Constants;
 import com.vmware.photon.controller.common.xenon.ControlFlags;
 import com.vmware.photon.controller.common.xenon.InitializationUtils;
 import com.vmware.photon.controller.common.xenon.PatchUtils;
@@ -216,6 +217,17 @@ public class KubernetesClusterCreateTaskService extends StatefulService {
 
           ClusterService.State cluster = operation.getBody(ClusterService.State.class);
 
+	  String loadBalancerAddress;
+	  if (HostUtils.isAuthEnabled(this)) {
+	  loadBalancerAddress = String.format("https://%s:%s",
+				  HostUtils.getLoadBalancerAddress(this),
+				  Constants.LOADBALANCER_API_HTTPS_PORT);
+	  } else {
+	  loadBalancerAddress = String.format("http://%s:%s",
+				  HostUtils.getLoadBalancerAddress(this),
+				  Constants.LOADBALANCER_API_HTTP_PORT);
+	  }
+
           NodeRolloutInput rolloutInput = new NodeRolloutInput();
           rolloutInput.clusterId = currentState.clusterId;
           rolloutInput.projectId = cluster.projectId;
@@ -234,7 +246,8 @@ public class KubernetesClusterCreateTaskService extends StatefulService {
               cluster.extendedProperties.get(ClusterManagerConstants.EXTENDED_PROPERTY_MASTER_IP),
               cluster.extendedProperties.get(ClusterManagerConstants.EXTENDED_PROPERTY_CONTAINER_NETWORK),
               cluster.extendedProperties.get(ClusterManagerConstants.EXTENDED_PROPERTY_SSH_KEY),
-              cluster.extendedProperties.get(ClusterManagerConstants.EXTENDED_PROPERTY_REGISTRY_CA_CERTIFICATE));
+              cluster.extendedProperties.get(ClusterManagerConstants.EXTENDED_PROPERTY_REGISTRY_CA_CERTIFICATE),
+							cluster.projectId, loadBalancerAddress, String.valueOf(HostUtils.isAuthEnabled(this)));
 
           NodeRollout rollout = new BasicNodeRollout();
           rollout.run(this, rolloutInput, new FutureCallback<NodeRolloutResult>() {

@@ -74,4 +74,12 @@ public class HostUtils {
     PhotonControllerXenonHost photonControllerXenonHost = (PhotonControllerXenonHost) service.getHost();
     return  ((ClusterManagerFactoryProvider) photonControllerXenonHost.getDeployer()).getClusterManagerFactory();
   }
+
+  public static String getLoadBalancerAddress(Service service) {
+    return getClusterManagerFactory(service).getLoadBalancerAddress();
+  }
+
+  public static boolean isAuthEnabled(Service service) {
+    return getClusterManagerFactory(service).isAuthEnabled();
+  }
 }

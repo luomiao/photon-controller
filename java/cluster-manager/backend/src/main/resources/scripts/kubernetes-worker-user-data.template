@@ -16,6 +16,11 @@ write_files:
     owner: root:root
     permissions: 0644
     path: /tmp/ca.crt
+  - content: |
+        vmName = $LOCAL_HOSTNAM
+    owner: root:root
+    permissions: 0644
+    path: /etc/kubernetes/pc_cloud.config
 
 users:
   - name: root

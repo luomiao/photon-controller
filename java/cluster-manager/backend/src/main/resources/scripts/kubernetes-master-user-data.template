@@ -15,6 +15,14 @@ write_files:
     owner: root:root
     permissions: 0644
     path: /root/setup-kubernetes-master.sh
+  - content: |
+        target = $LOADBALANCER_ADDRESS
+        project = $PROJECT_ID
+        vmName = $LOCAL_HOSTNAME
+        authentification = $AUTH_ENABLED
+    owner: root:root
+    permissions: 0644
+    path: /etc/kubernetes/pc_cloud.config
 
 users:
   - name: root

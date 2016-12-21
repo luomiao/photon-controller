@@ -39,6 +39,9 @@ public class KubernetesMasterNodeTemplate implements NodeTemplate {
   public static final String VM_NAME_PREFIX = "master";
   public static final String SSH_KEY_PROPERTY = "sshKey";
   public static final String CA_CERT_PROPERTY = "caCert";
+  public static final String PROJECT_ID_PROPERTY = "projectId";
+  public static final String LOADBALANCER_ADDRESS_PROPERTY = "loadBalancerAddr";
+  public static final String AUTH_ENABLED_PROPERTY = "authEnabled";
 
   public String getVmName(Map<String, String> properties) {
     Preconditions.checkNotNull(properties, "properties cannot be null");
@@ -57,6 +60,9 @@ public class KubernetesMasterNodeTemplate implements NodeTemplate {
     String cidrSignature = new SubnetUtils(ipAddress, netmask).getInfo().getCidrSignature();
     String sshKey = properties.get(SSH_KEY_PROPERTY);
     String caCert = properties.get(CA_CERT_PROPERTY);
+    String projectID = properties.get(PROJECT_ID_PROPERTY);
+    String loadBalancerAddress = properties.get(LOADBALANCER_ADDRESS_PROPERTY);
+    String authEnabled = properties.get(AUTH_ENABLED_PROPERTY);
 
     Map<String, String> parameters = new HashMap<>();
     parameters.put("$ETCD_QUORUM", NodeTemplateUtils.createEtcdQuorumString(etcdIps));
@@ -68,6 +74,9 @@ public class KubernetesMasterNodeTemplate implements NodeTemplate {
     parameters.put("$LOCAL_HOSTNAME", getVmName(properties));
     parameters.put("$SSH_KEY", sshKey);
     parameters.put("$CA_CERT", fixIndentationForCertificate(caCert));
+    parameters.put("$PROJECT_ID", projectID);
+    parameters.put("$LOADBALANCER_ADDRESS", loadBalancerAddress);
+    parameters.put("$AUTH_ENABLED", authEnabled);
 
     FileTemplate template = new FileTemplate();
     template.filePath = Paths.get(scriptDirectory, MASTER_USER_DATA_TEMPLATE).toString();
@@ -84,7 +93,8 @@ public class KubernetesMasterNodeTemplate implements NodeTemplate {
 
   public static Map<String, String> createProperties(
       List<String> etcdAddresses, String dns, String gateway, String netmask,
-      String masterIp, String containerNetwork, String sshKey, String caCert) {
+      String masterIp, String containerNetwork, String sshKey, String caCert,
+			String projectId, String loadBalancerAddr, String authEnabled) {
     Preconditions.checkNotNull(etcdAddresses, "etcdAddresses cannot be null");
     Preconditions.checkArgument(etcdAddresses.size() > 0, "etcdAddresses should contain at least one address");
     Preconditions.checkNotNull(dns, "dns cannot be null");
@@ -102,6 +112,9 @@ public class KubernetesMasterNodeTemplate implements NodeTemplate {
     properties.put(CONTAINER_NETWORK_PROPERTY, containerNetwork);
     properties.put(SSH_KEY_PROPERTY, sshKey);
     properties.put(CA_CERT_PROPERTY, caCert);
+    properties.put(PROJECT_ID_PROPERTY, projectId);
+    properties.put(LOADBALANCER_ADDRESS_PROPERTY, loadBalancerAddr);
+    properties.put(AUTH_ENABLED_PROPERTY, authEnabled);
 
     return properties;
   }

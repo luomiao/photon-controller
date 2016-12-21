@@ -427,7 +427,8 @@ public class Main {
 
     final ClusterManagerFactory clusterManagerFactory = new ClusterManagerFactory(listeningExecutorService,
         httpClient, cloudStoreServerSet,
-        Paths.get(deployerConfig.getDeployerContext().getScriptDirectory(), CLUSTER_SCRIPTS_DIRECTORY).toString());
+        Paths.get(deployerConfig.getDeployerContext().getScriptDirectory(), CLUSTER_SCRIPTS_DIRECTORY).toString(),
+				deployerConfig.getDeployerContext().getLoadBalancerAddress(), deployerConfig.getDeployerContext().isAuthEnabled());
 
     return new DeployerServiceGroup(deployerConfig.getDeployerContext(),
         apiClientFactory, deployerConfig.getContainersConfig(), listeningExecutorService,
